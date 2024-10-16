@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Drawer,
   Typography,
-  Switch,
   Button,
   Divider,
   IconButton,
@@ -23,22 +22,22 @@ const columns = [
 ];
 
 const SortingDrawer = ({ open, toggleDrawer }) => {
-  const [selectedColumns, setSelectedColumns] = useState(
-    columns.reduce((acc, column) => ({ ...acc, [column.id]: true }), {})
-  );
+  // const [selectedColumns, setSelectedColumns] = useState(
+  //   columns.reduce((acc, column) => ({ ...acc, [column.id]: true }), {})
+  // );
 
-  const handleToggle = (id) => {
-    setSelectedColumns((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+  // const handleToggle = (id) => {
+  //   setSelectedColumns((prev) => ({
+  //     ...prev,
+  //     [id]: !prev[id],
+  //   }));
+  // };
 
-  const showAllColumns = () => {
-    setSelectedColumns(
-      columns.reduce((acc, column) => ({ ...acc, [column.id]: true }), {})
-    );
-  };
+  // const showAllColumns = () => {
+  //   setSelectedColumns(
+  //     columns.reduce((acc, column) => ({ ...acc, [column.id]: true }), {})
+  //   );
+  // };
 
   return (
     <Drawer anchor="right" open={open} onClose={toggleDrawer}>
@@ -80,7 +79,7 @@ const SortingDrawer = ({ open, toggleDrawer }) => {
         <Button
           variant="outlined"
           fullWidth
-          onClick={showAllColumns}
+          // onClick={showAllColumns}
           sx={{ marginBottom: 2,height:"50px" }}
         >
           Clear Sort

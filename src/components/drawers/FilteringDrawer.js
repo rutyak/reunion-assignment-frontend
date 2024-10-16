@@ -13,10 +13,8 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SyncIcon from "@mui/icons-material/Sync";
-import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { SingleInputDateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { DateRangePicker } from "@mui/x-date-pickers-pro"; // Use the existing DateRangePicker
 
 const Base_url = process.env.REACT_APP_BACKEND_URL;
@@ -46,23 +44,23 @@ const FilteringDrawer = ({ open, toggleDrawer, onApplyFilters }) => {
   const [subcategoryOptions, setSubcategoryOptions] = useState([]);
 
   const handleFilterChange = (field) => (e) => {
-    setFilters({ ...filters, [field]: e.target.value });
+    setFilters((prevFilters) => ({ ...prevFilters, [field]: e.target.value }));
   };
 
   const handleRangeChange = (field) => (event, newValue) => {
-    setFilters({ ...filters, [field]: newValue });
+    setFilters((prevFilters) => ({ ...prevFilters, [field]: newValue }));
   };
 
   const handleCategoryChange = (event, value) => {
-    setFilters({ ...filters, category: value });
+    setFilters((prevFilters) => ({ ...prevFilters, category: value }));
   };
 
   const handleSubcategoryChange = (event, value) => {
-    setFilters({ ...filters, subcategory: value });
+    setFilters((prevFilters) => ({ ...prevFilters, subcategory: value }));
   };
 
   const handleDateRangeChange = (newValue) => {
-    setFilters({ ...filters, createdAt: newValue });
+    setFilters((prevFilters) => ({ ...prevFilters, createdAt: newValue }));
   };
 
   const resetField = (field) => {
