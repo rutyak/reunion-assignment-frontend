@@ -21,7 +21,7 @@ const columns = [
   { id: "salePrice", label: "Sale Price" },
 ];
 
-const SortingDrawer = ({ open, toggleDrawer }) => {
+const SortingDrawer = ({ open, toggleDrawer, setSorting, sorting }) => {
   // const [selectedColumns, setSelectedColumns] = useState(
   //   columns.reduce((acc, column) => ({ ...acc, [column.id]: true }), {})
   // );
@@ -70,7 +70,7 @@ const SortingDrawer = ({ open, toggleDrawer }) => {
             }}
           >
             <Typography>{column.label}</Typography>
-            <SwapVertIcon sx={{color:"lightgray", pl:1}}/>
+            <SwapVertIcon sx={{ color: "lightgray", pl: 1 }} />
           </Box>
         ))}
 
@@ -80,7 +80,7 @@ const SortingDrawer = ({ open, toggleDrawer }) => {
           variant="outlined"
           fullWidth
           // onClick={showAllColumns}
-          sx={{ marginBottom: 2,height:"50px" }}
+          sx={{ marginBottom: 2, height: "50px" }}
         >
           Clear Sort
         </Button>

@@ -1,27 +1,25 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
   getPaginationRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  flexRender,
+  getGroupedRowModel,
 } from "@tanstack/react-table";
 import {
   Table,
   TableBody,
-  TableCell,
   TableContainer,
   TableHead,
-  TableRow,
   Box,
-  TableSortLabel,
   Paper,
-  CircularProgress,
 } from "@mui/material";
-import SwapVertIcon from "@mui/icons-material/SwapVert";
-import { styled } from "@mui/system";
 import CustomPagination from "./CustomPagination";
+import GroupedRow from "./tableRows/GroupedRow";
+import SubRow from "./tableRows/SubRow";
+import HeaderRow from "./tableRows/HeaderRow";
+import Loading from "./Loading";
 
 const Base_url = process.env.REACT_APP_BACKEND_URL;
 
@@ -40,35 +38,47 @@ const columns = [
   },
 ];
 
-const StyledSwapVertIcon = styled(SwapVertIcon)(({ active }) => ({
-  color: active ? "#1976d2" : "gray",
-}));
-
-const CustomTable = ({ search, selectedColumns, showFilteredColumn }) => {
+const CustomTable = ({
+  search,
+  selectedColumns,
+  showFilteredColumn,
+  groupByColumn,
+}) => {
   const [sorting, setSorting] = useState([]);
   const [fetchedData, setFetchedData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(groupByColumn ? 3 : 10);
   const [loading, setLoading] = useState(false);
+  const [grouping, setGrouping] = useState([]);
+  const [allData, setAllData] = useState([]);
+
+  useEffect(() => {
+    if (groupByColumn) {
+      setGrouping([groupByColumn]);
+    } else {
+      setGrouping([]);
+    }
+  }, [groupByColumn]);
 
   const filteredColumn = columns.filter(
     (column) => selectedColumns[column.accessorKey]
   );
-  console.log("filtered column:", filteredColumn);
 
   const table = useReactTable({
     data: fetchedData,
     columns: showFilteredColumn ? filteredColumn : columns,
-    state: { search, sorting },
+    state: { search, sorting, grouping },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getGroupedRowModel: getGroupedRowModel(),
     onSortingChange: setSorting,
+    onGroupingChange: setGrouping,
   });
 
-  const getData = async (page = 0, limit = 10, search = "") => {
+  const getData = async (page = 0, limit, search = "") => {
     setLoading(true);
     try {
       const res = await fetch(
@@ -89,133 +99,72 @@ const CustomTable = ({ search, selectedColumns, showFilteredColumn }) => {
     }
   };
 
+  async function fetchAllData() {
+    setLoading(true);
+    try {
+      const res = await fetch(`${Base_url}/alldata`);
+      const data = await res.json();
+      console.log("data: ", data.data);
+      setAllData(data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     getData(pageIndex, pageSize, search);
-  }, [pageIndex, pageSize, search]);
+  }, [pageIndex, pageSize, search, groupByColumn]);
+
+  useEffect(() => {
+    if (groupByColumn) {
+      fetchAllData();
+    }
+  }, [groupByColumn]);
+
 
   return (
     <Box sx={{ paddingLeft: "10px", paddingRight: "10px", paddingTop: "10px" }}>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ mb: 5 }}>
         <Table
           stickyHeader
           aria-label="sortable table"
           sx={{
-            Width: "99%",
-            minWidth: "auto",
-            margin: "0 auto",
+            // width:"95%",
+            margin: "auto",
           }}
         >
           <TableHead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup?.id}>
-                {headerGroup?.headers?.map((header) => (
-                  <TableCell
-                    key={header.id}
-                    sx={{
-                      fontWeight: "bold",
-                      padding: "12px",
-                      backgroundColor: "#f5f5f5",
-                      borderBottom: "2px solid #e0e0e0",
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 1,
-                      textAlign: "center",
-                    }}
-                  >
-                    {header.column.getCanSort() ? (
-                      <TableSortLabel
-                        active={!!header?.column?.getIsSorted()}
-                        direction={
-                          header?.column?.getIsSorted() === "desc"
-                            ? "desc"
-                            : "asc"
-                        }
-                        onClick={header.column.getToggleSortingHandler()}
-                        IconComponent={() => (
-                          <StyledSwapVertIcon
-                            active={!!header?.column?.getIsSorted()}
-                          />
-                        )}
-                      >
-                        {flexRender(
-                          header?.column?.columnDef?.header,
-                          header?.getContext()
-                        )}
-                      </TableSortLabel>
-                    ) : (
-                      flexRender(
-                        header?.column?.columnDef?.header,
-                        header?.getContext()
-                      )
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
+              <HeaderRow headerGroup={headerGroup} groupByColumn={groupByColumn}/>
             ))}
           </TableHead>
           <TableBody>
             {loading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  sx={{ textAlign: "center" }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: "200px",
-                    }}
-                  >
-                    <CircularProgress />
-                  </Box>
-                </TableCell>
-              </TableRow>
+              <Loading columns={columns}/>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  sx={{ "&:hover": { backgroundColor: "#e3f2fd" } }}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      sx={{
-                        padding: "10px",
-                        borderBottom: "1px solid #e0e0e0",
-                        textAlign: "center",
-                      }}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <React.Fragment key={row.id}>
+                  <GroupedRow row={row} columns={columns} groupByColumn={groupByColumn}/>
+                  {row.getIsExpanded() &&
+                    row.subRows.map((subRow) => (
+                      <SubRow subRow={subRow} groupByColumn={groupByColumn}/>
+                    ))}
+                </React.Fragment>
               ))
             )}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: "100px",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        <CustomPagination
-          pageIndex={pageIndex}
-          pageSize={pageSize}
-          totalCount={totalCount}
-          onPageChange={setPageIndex}
-          onRowsPerPageChange={setPageSize}
-        />
-      </Box>
+      <CustomPagination
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        totalCount={totalCount}
+        onPageChange={setPageIndex}
+        onRowsPerPageChange={setPageSize}
+      />
     </Box>
   );
 };

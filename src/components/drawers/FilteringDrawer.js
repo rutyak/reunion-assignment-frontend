@@ -15,7 +15,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SyncIcon from "@mui/icons-material/Sync";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateRangePicker } from "@mui/x-date-pickers-pro"; // Use the existing DateRangePicker
+import { DateRangePicker } from "@mui/x-date-pickers-pro";
 
 const Base_url = process.env.REACT_APP_BACKEND_URL;
 

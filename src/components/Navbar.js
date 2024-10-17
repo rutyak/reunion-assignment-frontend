@@ -17,6 +17,10 @@ const Navbar = ({
   selectedColumns,
   setShowFilteredColumn,
   showFilteredColumn,
+  setGroupByColumn,
+  groupByColumn,
+  setSorting,
+  sorting,
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerType, setDrawerType] = useState("");
@@ -59,7 +63,7 @@ const Navbar = ({
             paddingRight: 1,
           },
           "& .MuiOutlinedInput-input": {
-            padding: "8px 14px",
+            padding: "10px 0px",
           },
         }}
         InputProps={{
@@ -111,13 +115,23 @@ const Navbar = ({
         />
       )}
       {drawerOpen && drawerType === "sortingdrawer" && (
-        <SortingDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
+        <SortingDrawer
+          open={drawerOpen}
+          toggleDrawer={toggleDrawer}
+          setSorting={setSorting}
+          sorting={sorting}
+        />
       )}
       {drawerOpen && drawerType === "filteringdrawer" && (
         <FilteringDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
       )}
       {drawerOpen && drawerType === "groupingdrawer" && (
-        <GroupingDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
+        <GroupingDrawer
+          open={drawerOpen}
+          toggleDrawer={toggleDrawer}
+          setGroupByColumn={setGroupByColumn}
+          groupByColumn={groupByColumn}
+        />
       )}
     </div>
   );

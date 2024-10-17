@@ -7,6 +7,7 @@ const CustomPagination = ({
   totalCount,
   onPageChange,
 }) => {
+  console.log("pageSize: ",pageSize);
   const totalPages = Math.ceil(totalCount / pageSize);
 
   const getDisplayedPages = () => {

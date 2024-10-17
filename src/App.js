@@ -17,6 +17,8 @@ function App() {
   const [search, setSearch] = useState("");
   const [selectedColumns, setSelectedColumns] = useState(initialState);
   const [showFilteredColumn, setShowFilteredColumn] = useState(false);
+  const [groupByColumn, setGroupByColumn] = useState("");
+  const [sorting, setSorting] = useState([]);
 
   return (
     <div className="App">
@@ -27,11 +29,18 @@ function App() {
         selectedColumns={selectedColumns}
         setShowFilteredColumn={setShowFilteredColumn}
         showFilteredColumn={showFilteredColumn}
+        setGroupByColumn={setGroupByColumn}
+        groupByColumn={groupByColumn}
+        setSorting={setSorting}
+        sorting={sorting}
       />
       <CustomTable
         search={search}
         selectedColumns={selectedColumns}
         showFilteredColumn={showFilteredColumn}
+        groupByColumn={groupByColumn}
+        setSorting={setSorting}
+        sorting={sorting}
       />
     </div>
   );
