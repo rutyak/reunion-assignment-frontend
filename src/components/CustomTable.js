@@ -27,6 +27,7 @@ import SwapVertIcon from "@mui/icons-material/SwapVert";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import SubRow from "../components/tableRows/SubRow";
+
 const Base_url = process.env.REACT_APP_BACKEND_URL;
 
 const StyledSwapVertIcon = styled(SwapVertIcon)(({ active }) => ({
@@ -38,7 +39,7 @@ const columns = [
   { accessorKey: "name", header: "Name" },
   { accessorKey: "category", header: "Category" },
   { accessorKey: "subcategory", header: "Subcategory" },
-  { accessorKey: "createdAt", header: "Created At"},
+  { accessorKey: "createdAt", header: "Created At" },
   { accessorKey: "updatedAt", header: "Updated At" },
   { accessorKey: "price", header: "Price" },
   {
@@ -76,28 +77,26 @@ const CustomTable = ({
   );
 
   const handleGlobalFilterChange = (newValue) => {
-    if (typeof newValue === 'string') {
+    if (typeof newValue === "string") {
       setSearch(newValue);
     } else {
       setFilters(newValue);
     }
   };
-  
+
   const getGlobalFilterString = () => {
-    const filterEntries = Object.values(filters) 
-      .map(value => {
+    const filterEntries = Object.values(filters)
+      .map((value) => {
         if (Array.isArray(value)) {
-          return value.join(", "); 
+          return value.join(", ");
         }
         return value;
       })
       .join(", ");
-    
-    console.log("filterEntries in table: ", filterEntries); 
 
     return search ? search : filterEntries;
   };
-  
+
   const table = useReactTable({
     data: fetchedData,
     columns: showFilteredColumn ? filteredColumn : columns,
@@ -113,12 +112,8 @@ const CustomTable = ({
     getGroupedRowModel: getGroupedRowModel(),
     onSortingChange: setSorting,
     onGroupingChange: setGrouping,
-    onGlobalFilterChange: handleGlobalFilterChange, 
+    onGlobalFilterChange: handleGlobalFilterChange,
   });
-  
-
-  console.log("filters in table: ", filters);
-  console.log("filters in search: ", search);
 
   const getData = async () => {
     setLoading(true);
@@ -141,18 +136,22 @@ const CustomTable = ({
   }, []);
 
   return (
-    <Box sx={{ paddingLeft: "10px", paddingRight: "10px", paddingTop: "10px" }}>
-      <TableContainer component={Paper} sx={{ mb: 5 }}>
-        <Table stickyHeader aria-label="sortable table" sx={{ margin: "auto" }}>
+    <Box sx={{ padding: "10px" }}>
+      <TableContainer component={Paper} sx={{ mb: 5, overflowX: "auto" }}>
+        <Table
+          stickyHeader
+          aria-label="sortable table"
+          sx={{ margin: "auto", minWidth: 600 }}
+        >
           <TableHead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup?.id} className="heade-table">
+              <TableRow key={headerGroup?.id} className="header-table">
                 {headerGroup?.headers?.map((header) => (
                   <TableCell
                     key={header.id}
                     sx={{
                       fontWeight: "bold",
-                      padding: "12px",
+                      padding: { xs: "10px", sm: "12px", md: "15px" },
                       paddingLeft: "20px",
                       backgroundColor: "#f5f5f5",
                       borderBottom: "2px solid #e0e0e0",
@@ -161,30 +160,53 @@ const CustomTable = ({
                       zIndex: 1,
                       textAlign: "center",
                       width: header.id === groupByColumn ? "270px" : "auto",
+                      fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
                     }}
                   >
                     {header.column.getCanSort() ? (
-                      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
                         <TableSortLabel
                           active={!!header?.column?.getIsSorted()}
-                          direction={header?.column?.getIsSorted() === "desc" ? "desc" : "asc"}
+                          direction={
+                            header?.column?.getIsSorted() === "desc"
+                              ? "desc"
+                              : "asc"
+                          }
                           onClick={header.column.getToggleSortingHandler()}
                           IconComponent={() => (
                             header.id !== groupByColumn ? (
-                              <StyledSwapVertIcon active={!!header?.column?.getIsSorted()} />
+                              <StyledSwapVertIcon
+                                active={!!header?.column?.getIsSorted()}
+                                sx={{ fontSize: { xs: '1rem', sm: '1.25rem', md:'1.35rem' } }} 
+                              />
                             ) : (
-                              <ArrowDownwardIcon sx={{ color: "lightgray" }} />
+                              <ArrowDownwardIcon sx={{ color: "lightgray", fontSize: { xs: '1rem', sm: '1.25rem', md:'1.35rem' } }} />
                             )
                           )}
                         >
-                          {flexRender(header?.column?.columnDef?.header, header?.getContext())}
+                          {flexRender(
+                            header?.column?.columnDef?.header,
+                            header?.getContext()
+                          )}
                         </TableSortLabel>
                         {header.id === groupByColumn && (
                           <KeyboardDoubleArrowRightIcon sx={{ ml: "130px" }} />
                         )}
                       </Box>
                     ) : (
-                      flexRender(header?.column?.columnDef?.header, header?.getContext())
+                      flexRender(
+                        header?.column?.columnDef?.header,
+                        header?.getContext()
+                      )
                     )}
                   </TableCell>
                 ))}
@@ -197,10 +219,18 @@ const CustomTable = ({
             ) : (
               table.getRowModel().rows.map((row) => (
                 <React.Fragment key={row.id}>
-                  <GroupedRow row={row} columns={columns} groupByColumn={groupByColumn} />
+                  <GroupedRow
+                    row={row}
+                    columns={columns}
+                    groupByColumn={groupByColumn}
+                  />
                   {row.getIsExpanded() &&
                     row.subRows.map((subRow) => (
-                      <SubRow subRow={subRow} groupByColumn={groupByColumn}/>
+                      <SubRow
+                        key={subRow.id}
+                        subRow={subRow}
+                        groupByColumn={groupByColumn}
+                      />
                     ))}
                 </React.Fragment>
               ))

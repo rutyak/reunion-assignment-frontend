@@ -57,18 +57,26 @@ const SortingDrawer = ({ open, toggleDrawer, setSorting, sorting }) => {
           py: 2,
           display: "flex",
           flexDirection: "column",
+          bgcolor: "#f5f5f5",
+          height:"100vh" 
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-          <Typography variant="h6">Sorting Options</Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+          <Typography variant="h6" fontWeight="bold" color="#333">
+            Sorting Options
+          </Typography>
           <IconButton onClick={toggleDrawer}>
-            <CloseIcon />
+            <CloseIcon sx={{ color: "#333" }} />
           </IconButton>
         </Box>
 
         {columns.map((column) => {
           const isSorted = sorting.some((sort) => sort.id === column.id);
-          const sortDirection = isSorted ? sorting.find((sort) => sort.id === column.id)?.desc ? 'desc' : 'asc' : false;
+          const sortDirection = isSorted
+            ? sorting.find((sort) => sort.id === column.id)?.desc
+              ? "desc"
+              : "asc"
+            : false;
 
           return (
             <Box
@@ -77,31 +85,43 @@ const SortingDrawer = ({ open, toggleDrawer, setSorting, sorting }) => {
                 display: "flex",
                 alignItems: "center",
                 border: "0.5px solid lightgray",
-                px: "10px",
-                py: "13px",
+                borderRadius: 1,
+                px: 2,
+                py: 1.5,
                 mb: 1,
                 cursor: "pointer",
                 backgroundColor: selectedColumns[column.id] ? "white" : "lightgray",
+                '&:hover': {
+                  backgroundColor: selectedColumns[column.id] ? "#e0e0e0" : "#d3d3d3", 
+                },
               }}
               onClick={() => handleToggle(column.id)}
             >
-              <Typography>{column.label}</Typography>
+              <Typography variant="body1">{column.label}</Typography>
               <SwapVertIcon
                 sx={{
-                  color: isSorted ? (sortDirection === 'desc' ? "blue" : "green") : "lightgray",
+                  color: isSorted ? (sortDirection === "desc" ? "blue" : "green") : "lightgray",
+                  ml: 1,
                 }}
               />
             </Box>
           );
         })}
 
-        <Divider sx={{ marginY: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         <Button
           variant="outlined"
           fullWidth
           onClick={handleClearSort}
-          sx={{ marginBottom: 2, height: "50px" }}
+          sx={{
+            height: "50px",
+            color: "#333",
+            borderColor: "#007bff", 
+            '&:hover': {
+              bgcolor: "#e0e0e0", 
+            },
+          }}
         >
           Clear Sort
         </Button>

@@ -35,10 +35,12 @@ const GroupingDrawer = ({
           py: 2,
           display: "flex",
           flexDirection: "column",
+          bgcolor: "#f5f5f5",
+          height:"100vh"
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-          <Typography variant="h6">Create Groups</Typography>
+          <Typography  variant="h5" fontWeight="bold" color="#333">Create Groups</Typography>
           <IconButton onClick={toggleDrawer}>
             <CloseIcon />
           </IconButton>
@@ -50,9 +52,15 @@ const GroupingDrawer = ({
             value={selectedColumn}
             onChange={handleChange}
             displayEmpty
+            sx={{
+              bgcolor: "#fff",
+              "& .MuiSelect-select": {
+                padding: "8px 12px",
+              },
+            }}
           >
             <MenuItem value="">
-              <Typography variant="p">Select a column</Typography>
+              <Typography variant="body2">Select a column</Typography>
             </MenuItem>
             <MenuItem value="category">Category</MenuItem>
             <MenuItem value="subcategory">Subcategory</MenuItem>
@@ -64,16 +72,35 @@ const GroupingDrawer = ({
         <Button
           variant="outlined"
           fullWidth
-          sx={{ marginBottom: 2, height: "50px" }}
+          sx={{
+            marginBottom: 2,
+            height: "50px",
+            mb: 2,
+            color: "#333",
+            "&:hover": {
+              bgColor: "#e0e0e0",
+            },
+          }}
           onClick={() => {
             setSelectedColumn("");
-            setGroupByColumn(""); 
+            setGroupByColumn("");
           }}
         >
           Clear Grouping
         </Button>
 
-        <Button variant="contained" sx={{ height: "50px" }} fullWidth>
+        <Button
+          variant="contained"
+          sx={{
+            height: "50px",
+            bgcolor: "#007bff",
+            color: "#fff",
+            "&:hover": {
+              bgcolor: "#0056b3",
+            },
+          }}
+          fullWidth
+        >
           Apply Grouping
         </Button>
       </Box>

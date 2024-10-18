@@ -53,12 +53,15 @@ const ShowHideColumnDrawer = ({
           py: 2,
           display: "flex",
           flexDirection: "column",
+          bgcolor: "#f5f5f5", 
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-          <Typography variant="h6">Show/Hide Columns</Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+          <Typography variant="h6" fontWeight="bold" color="#333">
+            Show/Hide Columns
+          </Typography>
           <IconButton onClick={toggleDrawer}>
-            <CloseIcon />
+            <CloseIcon sx={{ color: "#333" }} />
           </IconButton>
         </Box>
 
@@ -70,34 +73,50 @@ const ShowHideColumnDrawer = ({
               justifyContent: "space-between",
               alignItems: "center",
               border: "0.5px solid lightgray",
-              px: "10px",
-              py: "7px",
-              mb: 1,
+              borderRadius: 1,
+              px: 2,
+              py: 1,
+              mb: 1, 
             }}
           >
-            <Typography>{column.label}</Typography>
-            {console.log("selectedColumns: ", selectedColumns)}
+            <Typography variant="body1">{column.label}</Typography>
             <Switch
               checked={selectedColumns[column.id]}
               onChange={() => handleToggle(column.id)}
+              color="primary"
             />
           </Box>
         ))}
 
-        <Divider sx={{ marginY: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         <Button
           variant="outlined"
           fullWidth
           onClick={showAllColumns}
-          sx={{ marginBottom: 2, height: "50px" }}
+          sx={{
+            mb: 2,
+            height: "50px",
+            color: "#333",
+            borderColor: "#007bff", 
+            '&:hover': {
+              bgcolor: "#e0e0e0", 
+            },
+          }}
         >
-          Show all columns
+          Show All Columns
         </Button>
 
         <Button
           variant="contained"
-          sx={{ height: "50px" }}
+          sx={{
+            height: "50px",
+            bgcolor: "#007bff",
+            color: "#fff",
+            '&:hover': {
+              bgcolor: "#0056b3", 
+            },
+          }}
           fullWidth
           onClick={() => setShowFilteredColumn(true)}
         >

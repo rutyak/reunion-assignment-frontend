@@ -37,6 +37,7 @@ const Navbar = ({
     color: "gray",
     "&:hover": { color: "#1976d2" },
     transition: "color 0.3s",
+    fontSize: { xs: "1rem", sm: "1.25rem" }, 
   };
 
   const handleSearchChange = (event) => {

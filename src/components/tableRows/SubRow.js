@@ -1,33 +1,38 @@
 import React from "react";
-
-import {
-  flexRender,
-} from "@tanstack/react-table";
-import {
-  TableCell,
-  TableRow,
-  Box,
-} from "@mui/material";
+import { flexRender } from "@tanstack/react-table";
+import { TableCell, TableRow, Box } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
-const SubRow = ({subRow, groupByColumn}) => {
+const SubRow = ({ subRow, groupByColumn }) => {
   return (
     <TableRow key={subRow.id} sx={{ backgroundColor: "#f9f9f9" }}>
       {subRow.getVisibleCells().map((cell) => (
-        <>
+        <React.Fragment key={cell.id}>
           {cell.column.id !== groupByColumn ? (
             <TableCell
-              key={cell.id}
-              sx={{ padding: "10px", textAlign: "center" }}
+              sx={{
+                padding: { xs: "8px", sm: "10px", md: "12px" }, 
+                textAlign: "center",
+                fontSize: { xs: "10px", sm: "12px", md: "14px" }, 
+              }}
             >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
             </TableCell>
           ) : (
-            <Box sx={{ display: "flex", justifyContent: "end" }}>
-              <KeyboardArrowRightIcon sx={{ pt: "5px", color: "lightgray" }} />
-            </Box>
+            <TableCell
+              sx={{
+                padding: { xs: "8px", sm: "10px", md: "12px" }, 
+                textAlign: "center",
+              }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "end" }}>
+                <KeyboardArrowRightIcon
+                  sx={{ pt: "5px", color: "lightgray", fontSize: { xs: "1rem", sm: "1.25rem" } }} // Responsive icon size
+                />
+              </Box>
+            </TableCell>
           )}
-        </>
+        </React.Fragment>
       ))}
     </TableRow>
   );
