@@ -42,7 +42,7 @@ const HeaderRow = ({headerGroup, groupByColumn}) =>{
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: groupByColumn? "space-between": "center",
+                  justifyContent: "center",
                   alignItems: "center",
                 }}
               >
@@ -70,7 +70,7 @@ const HeaderRow = ({headerGroup, groupByColumn}) =>{
                   )}
                 </TableSortLabel>
                 {header.id === groupByColumn && (
-                  <KeyboardDoubleArrowRightIcon />
+                  <KeyboardDoubleArrowRightIcon sx={{ml:"130px"}}/>
                 )}
               </Box>
             ) : (

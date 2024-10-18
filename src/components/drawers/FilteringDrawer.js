@@ -29,17 +29,14 @@ const filterConfig = [
   { name: "saleprice", label: "Sale Price", type: "range" },
 ];
 
-const FilteringDrawer = ({ open, toggleDrawer, onApplyFilters }) => {
-  const [filters, setFilters] = useState({
-    name: "",
-    category: [],
-    subcategory: [],
-    createdAt: [null, null],
-    updatedAt: [null, null],
-    price: [11, 100],
-    saleprice: [11, 100],
-  });
-
+const FilteringDrawer = ({
+  open,
+  toggleDrawer,
+  onApplyFilters,
+  setFilters,
+  filters,
+  setShowAllFilteredData
+}) => {
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [subcategoryOptions, setSubcategoryOptions] = useState([]);
 
@@ -68,7 +65,9 @@ const FilteringDrawer = ({ open, toggleDrawer, onApplyFilters }) => {
       ...prevFilters,
       [field]:
         filterConfig.find((f) => f.name === field).type === "range"
-          ? [11, 100]
+          ? field === "price"
+            ? [11, 117] 
+            : [11, 100] 
           : filterConfig.find((f) => f.name === field).type === "date"
           ? [null, null]
           : "",
@@ -82,13 +81,13 @@ const FilteringDrawer = ({ open, toggleDrawer, onApplyFilters }) => {
       subcategory: [],
       createdAt: [null, null],
       updatedAt: [null, null],
-      price: [11, 100],
-      saleprice: [11, 100],
+      price: [11, 117], 
+      saleprice: [11, 100], 
     });
   };
 
   const handleApplyFilters = () => {
-    onApplyFilters(filters);
+    setShowAllFilteredData(true);
   };
 
   useEffect(() => {
@@ -159,11 +158,7 @@ const FilteringDrawer = ({ open, toggleDrawer, onApplyFilters }) => {
               {filter.type === "multi-select" ? (
                 <Autocomplete
                   multiple
-                  options={
-                    filter.name === "category"
-                      ? categoryOptions
-                      : subcategoryOptions
-                  }
+                  options={filter.name === "category" ? categoryOptions : subcategoryOptions}
                   value={filters[filter.name]}
                   onChange={
                     filter.name === "category"
@@ -196,10 +191,11 @@ const FilteringDrawer = ({ open, toggleDrawer, onApplyFilters }) => {
                   onChange={handleRangeChange(filter.name)}
                   valueLabelDisplay="auto"
                   min={11}
-                  max={100}
+                  max={filter.name === "price" ? 117 : 100}
                 />
               ) : filter.type === "date" ? (
                 <DateRangePicker
+                  id={filter.name}
                   startText="Start Date"
                   endText="End Date"
                   value={filters.createdAt}
@@ -244,16 +240,15 @@ const FilteringDrawer = ({ open, toggleDrawer, onApplyFilters }) => {
             sx={{ mb: 2, height: "50px" }}
             onClick={clearFilters}
           >
-            Clear Filters
+            Clear
           </Button>
-
           <Button
             variant="contained"
-            sx={{ height: "50px" }}
             fullWidth
+            sx={{ height: "50px" }}
             onClick={handleApplyFilters}
           >
-            Apply Filters
+            Apply
           </Button>
         </Box>
       </Drawer>

@@ -1,14 +1,19 @@
 import React from "react";
 import { Box, Button } from "@mui/material";
 
-const CustomPagination = ({
-  pageIndex,
-  pageSize,
-  totalCount,
-  onPageChange,
-}) => {
-  console.log("pageSize: ",pageSize);
-  const totalPages = Math.ceil(totalCount / pageSize);
+const CustomPagination = ({ table }) => {
+  const {
+    getCanPreviousPage,
+    getCanNextPage,
+    previousPage,
+    nextPage,
+    setPageIndex,
+    getPageCount,
+    getState,
+  } = table;
+
+  const { pageIndex } = getState().pagination;
+  const totalPages = getPageCount();
 
   const getDisplayedPages = () => {
     const pages = [];
@@ -23,7 +28,7 @@ const CustomPagination = ({
       } else if (pageIndex >= totalPages - 3) {
         pages.push(1, "...", totalPages - 2, totalPages - 1, totalPages);
       } else {
-        pages.push(1, "...", pageIndex, pageIndex + 1, pageIndex + 2, "...", totalPages);
+        pages.push(1, "...", pageIndex + 1, pageIndex + 2, pageIndex + 3, "...", totalPages);
       }
     }
     return pages;
@@ -37,17 +42,18 @@ const CustomPagination = ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        mt: 2,
       }}
     >
       <Button
-        onClick={() => onPageChange(pageIndex - 1)}
-        disabled={pageIndex === 0}
+        onClick={() => previousPage()}
+        disabled={!getCanPreviousPage()}
         sx={{
           minWidth: "40px",
-          opacity: pageIndex === 0 ? 0.5 : 1,
+          opacity: !getCanPreviousPage() ? 0.5 : 1,
           transition: "opacity 0.2s",
           '&:hover': {
-            backgroundColor: pageIndex !== 0 && '#1976d2',
+            backgroundColor: getCanPreviousPage() && '#1976d2',
           },
         }}
       >
@@ -57,7 +63,7 @@ const CustomPagination = ({
       {displayedPages.map((page, index) => (
         <Button
           key={index}
-          onClick={() => page !== "..." && onPageChange(page - 1)}
+          onClick={() => typeof page === 'number' && setPageIndex(page - 1)}
           variant={pageIndex === page - 1 ? "contained" : "outlined"}
           sx={{
             mx: 0.5,
@@ -79,14 +85,14 @@ const CustomPagination = ({
       ))}
 
       <Button
-        onClick={() => onPageChange(pageIndex + 1)}
-        disabled={pageIndex >= totalPages - 1}
+        onClick={() => nextPage()}
+        disabled={!getCanNextPage()}
         sx={{
           minWidth: "40px",
-          opacity: pageIndex >= totalPages - 1 ? 0.5 : 1,
+          opacity: !getCanNextPage() ? 0.5 : 1,
           transition: "opacity 0.2s",
           '&:hover': {
-            backgroundColor: pageIndex < totalPages - 1 && '#1976d2',
+            backgroundColor: getCanNextPage() && '#1976d2',
           },
         }}
       >

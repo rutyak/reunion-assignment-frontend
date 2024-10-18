@@ -21,6 +21,9 @@ const Navbar = ({
   groupByColumn,
   setSorting,
   sorting,
+  setFilters,
+  filters,
+  setShowAllFilteredData
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerType, setDrawerType] = useState("");
@@ -123,7 +126,13 @@ const Navbar = ({
         />
       )}
       {drawerOpen && drawerType === "filteringdrawer" && (
-        <FilteringDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
+        <FilteringDrawer
+          open={drawerOpen}
+          toggleDrawer={toggleDrawer}
+          setFilters={setFilters}
+          filters={filters}
+          setShowAllFilteredData={setShowAllFilteredData}
+        />
       )}
       {drawerOpen && drawerType === "groupingdrawer" && (
         <GroupingDrawer

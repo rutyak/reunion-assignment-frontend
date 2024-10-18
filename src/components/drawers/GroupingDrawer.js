@@ -65,7 +65,10 @@ const GroupingDrawer = ({
           variant="outlined"
           fullWidth
           sx={{ marginBottom: 2, height: "50px" }}
-          onClick={() => setSelectedColumn("")}
+          onClick={() => {
+            setSelectedColumn("");
+            setGroupByColumn(""); 
+          }}
         >
           Clear Grouping
         </Button>

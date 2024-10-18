@@ -14,7 +14,19 @@ function App() {
     subcategory: true,
     updatedAt: true,
   };
+
+  const initialFilterState = {
+    name: "",
+    category: [],
+    subcategory: [],
+    createdAt: [null, null],
+    updatedAt: [null, null],
+    price: [11, 100],
+    saleprice: [11, 100],
+  };
   const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState(initialFilterState);
+  const [showAllFilteredData, setShowAllFilteredData] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState(initialState);
   const [showFilteredColumn, setShowFilteredColumn] = useState(false);
   const [groupByColumn, setGroupByColumn] = useState("");
@@ -33,14 +45,20 @@ function App() {
         groupByColumn={groupByColumn}
         setSorting={setSorting}
         sorting={sorting}
+        setFilters={setFilters}
+        filters={filters}
+        setShowAllFilteredData={setShowAllFilteredData}
       />
       <CustomTable
         search={search}
+        setSearch={setSearch}
         selectedColumns={selectedColumns}
         showFilteredColumn={showFilteredColumn}
         groupByColumn={groupByColumn}
         setSorting={setSorting}
         sorting={sorting}
+        setFilters={setFilters}
+        filters={showAllFilteredData? filters: ""}
       />
     </div>
   );

@@ -36,7 +36,7 @@ const ShowHideColumnDrawer = ({
     }));
     setShowFilteredColumn(false);
   };
-
+ 
   const showAllColumns = () => {
     setSelectedColumns(
       columns.reduce((acc, column) => ({ ...acc, [column.id]: true }), {})

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Drawer,
@@ -18,26 +18,35 @@ const columns = [
   { id: "createdAt", label: "Created At" },
   { id: "updatedAt", label: "Updated At" },
   { id: "price", label: "Price" },
-  { id: "salePrice", label: "Sale Price" },
+  { id: "sale_price", label: "Sale Price" },
 ];
 
 const SortingDrawer = ({ open, toggleDrawer, setSorting, sorting }) => {
-  // const [selectedColumns, setSelectedColumns] = useState(
-  //   columns.reduce((acc, column) => ({ ...acc, [column.id]: true }), {})
-  // );
+  const [selectedColumns, setSelectedColumns] = useState(
+    columns.reduce((acc, column) => ({ ...acc, [column.id]: true }), {})
+  );
 
-  // const handleToggle = (id) => {
-  //   setSelectedColumns((prev) => ({
-  //     ...prev,
-  //     [id]: !prev[id],
-  //   }));
-  // };
+  const handleToggle = (id) => {
+    setSelectedColumns((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
 
-  // const showAllColumns = () => {
-  //   setSelectedColumns(
-  //     columns.reduce((acc, column) => ({ ...acc, [column.id]: true }), {})
-  //   );
-  // };
+    setSorting((prev) => {
+      const existingSort = prev.find((sort) => sort.id === id);
+      if (existingSort) {
+        return prev.map((sort) =>
+          sort.id === id ? { ...sort, desc: !existingSort.desc } : sort
+        );
+      } else {
+        return [...prev, { id, desc: false }];
+      }
+    });
+  };
+
+  const handleClearSort = () => {
+    setSorting([]); 
+  };
 
   return (
     <Drawer anchor="right" open={open} onClose={toggleDrawer}>
@@ -57,29 +66,41 @@ const SortingDrawer = ({ open, toggleDrawer, setSorting, sorting }) => {
           </IconButton>
         </Box>
 
-        {columns.map((column) => (
-          <Box
-            key={column.id}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              border: "0.5px solid lightgray",
-              px: "10px",
-              py: "13px",
-              mb: 1,
-            }}
-          >
-            <Typography>{column.label}</Typography>
-            <SwapVertIcon sx={{ color: "lightgray", pl: 1 }} />
-          </Box>
-        ))}
+        {columns.map((column) => {
+          const isSorted = sorting.some((sort) => sort.id === column.id);
+          const sortDirection = isSorted ? sorting.find((sort) => sort.id === column.id)?.desc ? 'desc' : 'asc' : false;
+
+          return (
+            <Box
+              key={column.id}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                border: "0.5px solid lightgray",
+                px: "10px",
+                py: "13px",
+                mb: 1,
+                cursor: "pointer",
+                backgroundColor: selectedColumns[column.id] ? "white" : "lightgray",
+              }}
+              onClick={() => handleToggle(column.id)}
+            >
+              <Typography>{column.label}</Typography>
+              <SwapVertIcon
+                sx={{
+                  color: isSorted ? (sortDirection === 'desc' ? "blue" : "green") : "lightgray",
+                }}
+              />
+            </Box>
+          );
+        })}
 
         <Divider sx={{ marginY: 2 }} />
 
         <Button
           variant="outlined"
           fullWidth
-          // onClick={showAllColumns}
+          onClick={handleClearSort}
           sx={{ marginBottom: 2, height: "50px" }}
         >
           Clear Sort
