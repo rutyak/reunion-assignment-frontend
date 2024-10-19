@@ -22,6 +22,7 @@ import SubRow from "../components/tableRows/SubRow";
 import HeaderRow from "./tableRows/HeaderRow";
 
 const Base_url = process.env.REACT_APP_BACKEND_URL;
+console.log("Base_url new: ", Base_url);
 
 const columns = [
   { accessorKey: "id", header: "ID" },
@@ -63,9 +64,10 @@ const CustomTable = ({
     async function fetchData() {
       setLoading(true);
       try {
-        const res = await fetch(`${Base_url}/alldata`);
+        const res = await fetch(`${Base_url}/data`);
         const data = await res.json();
         let filteredData = data.data;
+        console.log("data..: ",filteredData);
 
         if (filters) {
           if (filters.name) {
@@ -73,12 +75,12 @@ const CustomTable = ({
               item.name.toLowerCase().includes(filters.name.toLowerCase())
             );
           }
-          if (filters.category.length > 0) {
+          if (filters?.category?.length > 0) {
             filteredData = filteredData.filter(item =>
               filters.category.includes(item.category)
             );
           }
-          if (filters.subcategory.length > 0) {
+          if (filters?.subcategory?.length > 0) {
             filteredData = filteredData.filter(item =>
               filters.subcategory.includes(item.subcategory)
             );
