@@ -98,7 +98,7 @@ const FilteringDrawer = ({
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch(`${Base_url}/alldata`);
+        const res = await fetch(`${Base_url}/data`);
         const data = await res.json();
         const categories = [...new Set(data.data.map((item) => item.category))];
         const subcategories = [
