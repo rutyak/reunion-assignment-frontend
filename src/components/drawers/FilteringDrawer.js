@@ -42,24 +42,29 @@ const FilteringDrawer = ({
 
   const handleFilterChange = (field) => (e) => {
     setFilters((prevFilters) => ({ ...prevFilters, [field]: e.target.value }));
+    setShowAllFilteredData(false);
   };
 
   const handleRangeChange = (field) => (event, newValue) => {
     setFilters((prevFilters) => ({ ...prevFilters, [field]: newValue }));
+    setShowAllFilteredData(false);
   };
 
   const handleCategoryChange = (event, value) => {
     setFilters((prevFilters) => ({ ...prevFilters, category: value }));
+    setShowAllFilteredData(false);
   };
 
   const handleSubcategoryChange = (event, value) => {
     setFilters((prevFilters) => ({ ...prevFilters, subcategory: value }));
+    setShowAllFilteredData(false);
   };
 
-  const handleDateRangeChange = (newValue) => {
-    setFilters((prevFilters) => ({ ...prevFilters, createdAt: newValue }));
+  const handleDateRangeChange = (field) => (newValue) => {
+    setFilters((prevFilters) => ({ ...prevFilters, [field]: newValue }));
+    setShowAllFilteredData(false);
   };
-
+  
   const resetField = (field) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
@@ -115,7 +120,7 @@ const FilteringDrawer = ({
         anchor="right"
         open={open}
         onClose={toggleDrawer}
-        sx={{ "& .MuiDrawer-paper": { bgcolor: "#f5f5f5"}, height:"100vh" }} 
+        sx={{ "& .MuiDrawer-paper": { bgcolor: "#f5f5f5" }, height: "100vh" }}
       >
         <Box
           sx={{
@@ -143,7 +148,7 @@ const FilteringDrawer = ({
                 borderRadius: "8px",
                 p: 2,
                 mb: 2,
-                bgcolor: "#fff", 
+                bgcolor: "#fff",
                 boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
               }}
             >
@@ -155,9 +160,7 @@ const FilteringDrawer = ({
                   mb: 1,
                 }}
               >
-                <Typography variant="body1">
-                  {filter.label}
-                </Typography>
+                <Typography variant="body1">{filter.label}</Typography>
                 <IconButton
                   onClick={() => resetField(filter.name)}
                   sx={{ ml: 1 }}
@@ -186,7 +189,7 @@ const FilteringDrawer = ({
                         key={option}
                         label={option}
                         {...getTagProps({ index })}
-                        sx={{ bgcolor: "#007bff", color: "#fff", m: 0.5 }} // Style chips
+                        sx={{ bgcolor: "#007bff", color: "#fff", m: 0.5 }}
                       />
                     ))
                   }
@@ -220,31 +223,30 @@ const FilteringDrawer = ({
                 />
               ) : filter.type === "date" ? (
                 <DateRangePicker
-                  id={filter.name}
                   startText="Start Date"
                   endText="End Date"
-                  value={filters.createdAt}
-                  onChange={handleDateRangeChange}
+                  value={filters[filter.name]}
+                  onChange={handleDateRangeChange(filter.name)}
                   renderInput={(startProps, endProps) => (
                     <>
                       <TextField
                         {...startProps}
                         variant="outlined"
                         size="small"
-                        sx={{ width: "80%", ml: "10px", bgcolor: "#f0f0f0" }} 
+                        sx={{ width: "80%", ml: "10px", bgcolor: "#f0f0f0" }}
                       />
                       <TextField
                         {...endProps}
                         variant="outlined"
                         size="small"
-                        sx={{ width: "80%", ml: "10px", bgcolor: "#f0f0f0" }} 
+                        sx={{ width: "80%", ml: "10px", bgcolor: "#f0f0f0" }}
                       />
                     </>
                   )}
                 />
               ) : (
                 <TextField
-                  sx={{ ml: "9px", width: "80%", bgcolor: "#f0f0f0" }} 
+                  sx={{ ml: "9px", width: "80%", bgcolor: "#f0f0f0" }}
                   value={filters[filter.name]}
                   onChange={handleFilterChange(filter.name)}
                   variant="outlined"

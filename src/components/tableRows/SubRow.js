@@ -22,12 +22,13 @@ const SubRow = ({ subRow, groupByColumn }) => {
             <TableCell
               sx={{
                 padding: { xs: "8px", sm: "10px", md: "12px" }, 
+                fontSize: { xs: "10px", sm: "12px", md: "14px" }, 
                 textAlign: "center",
               }}
             >
               <Box sx={{ display: "flex", justifyContent: "end" }}>
                 <KeyboardArrowRightIcon
-                  sx={{ pt: "5px", color: "lightgray", fontSize: { xs: "1rem", sm: "1.25rem" } }} // Responsive icon size
+                  sx={{ pt: "5px", color: "lightgray", fontSize: { xs: "1rem", sm: "1.25rem" } }} 
                 />
               </Box>
             </TableCell>

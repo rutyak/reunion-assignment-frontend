@@ -40,17 +40,15 @@ const columns = [
 
 const CustomTable = ({
   search,
-  setSearch,
   selectedColumns,
   showFilteredColumn,
   groupByColumn,
-  setSorting,
   sorting,
-  setFilters,
+  setSorting,
   filters,
 }) => {
-  const [fetchedData, setFetchedData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [grouping, setGrouping] = useState([]);
 
   useEffect(() => {
@@ -61,38 +59,61 @@ const CustomTable = ({
     }
   }, [groupByColumn]);
 
-  const filteredColumn = columns.filter(
-    (column) => selectedColumns[column.accessorKey]
-  );
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const res = await fetch(`${Base_url}/alldata`);
+        const data = await res.json();
+        let filteredData = data.data;
 
-  const handleGlobalFilterChange = (newValue) => {
-    if (typeof newValue === "string") {
-      setSearch(newValue);
-    } else {
-      setFilters(newValue);
-    }
-  };
-
-  const getGlobalFilterString = () => {
-    const filterEntries = Object.values(filters)
-      .map((value) => {
-        if (Array.isArray(value)) {
-          return value.join(", ");
+        if (filters) {
+          if (filters.name) {
+            filteredData = filteredData.filter(item =>
+              item.name.toLowerCase().includes(filters.name.toLowerCase())
+            );
+          }
+          if (filters.category.length > 0) {
+            filteredData = filteredData.filter(item =>
+              filters.category.includes(item.category)
+            );
+          }
+          if (filters.subcategory.length > 0) {
+            filteredData = filteredData.filter(item =>
+              filters.subcategory.includes(item.subcategory)
+            );
+          }
+          if (filters.createdAt[0] && filters.createdAt[1]) {
+            filteredData = filteredData.filter(item => {
+              const createdAt = new Date(item.createdAt);
+              return createdAt >= filters.createdAt[0] && createdAt <= filters.createdAt[1];
+            });
+          }
+          if (filters.price) {
+            filteredData = filteredData.filter(item =>
+              item.price >= filters.price[0] && item.price <= filters.price[1]
+            );
+          }
         }
-        return value;
-      })
-      .join(", ");
 
-    return search ? search : filterEntries;
-  };
+        setTableData(filteredData);
+      } catch (error) {
+        console.error("Error fetching or filtering data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [filters]);
 
   const table = useReactTable({
-    data: fetchedData,
-    columns: showFilteredColumn ? filteredColumn : columns,
+    data: tableData,
+    columns: showFilteredColumn ? columns.filter(column => selectedColumns[column.accessorKey]) : columns,
     state: {
       sorting,
       grouping,
-      globalFilter: getGlobalFilterString() || null,
+      globalFilter: search,
     },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -101,60 +122,27 @@ const CustomTable = ({
     getGroupedRowModel: getGroupedRowModel(),
     onSortingChange: setSorting,
     onGroupingChange: setGrouping,
-    onGlobalFilterChange: handleGlobalFilterChange,
   });
-
-  const getData = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`${Base_url}/alldata`);
-      if (!res.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await res.json();
-      setFetchedData(data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <Box sx={{ padding: "10px" }}>
       <TableContainer component={Paper} sx={{ mb: 5, overflowX: "auto" }}>
-        <Table
-          stickyHeader
-          aria-label="sortable table"
-          sx={{ margin: "auto", minWidth: 600 }}
-        >
+        <Table stickyHeader aria-label="sortable table" sx={{ margin: "auto", minWidth: 600 }}>
           <TableHead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <HeaderRow headerGroup={headerGroup} groupByColumn={groupByColumn}/>
+            {table.getHeaderGroups().map(headerGroup => (
+              <HeaderRow key={headerGroup.id} headerGroup={headerGroup} groupByColumn={groupByColumn} />
             ))}
           </TableHead>
           <TableBody>
             {loading ? (
               <Loading columns={columns} />
             ) : (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map(row => (
                 <React.Fragment key={row.id}>
-                  <GroupedRow
-                    row={row}
-                    columns={columns}
-                    groupByColumn={groupByColumn}
-                  />
+                  <GroupedRow row={row} columns={columns} groupByColumn={groupByColumn} />
                   {row.getIsExpanded() &&
-                    row.subRows.map((subRow) => (
-                      <SubRow
-                        key={subRow.id}
-                        subRow={subRow}
-                        groupByColumn={groupByColumn}
-                      />
+                    row.subRows.map(subRow => (
+                      <SubRow key={subRow.id} subRow={subRow} groupByColumn={groupByColumn} />
                     ))}
                 </React.Fragment>
               ))

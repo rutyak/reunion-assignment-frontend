@@ -23,7 +23,9 @@ const Navbar = ({
   sorting,
   setFilters,
   filters,
-  setShowAllFilteredData
+  setShowAllFilteredData,
+  setApplyGrouping,
+  applyGrouping
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerType, setDrawerType] = useState("");
@@ -52,7 +54,7 @@ const Navbar = ({
         justifyContent: "end",
         alignItems: "center",
         gap: "15px",
-        margin: "10px",
+        margin: "10px"
       }}
     >
       <TextField
